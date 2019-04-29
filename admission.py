@@ -1,4 +1,3 @@
-# ============================================================================ line 1 ============================================================================
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,8 +15,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 
-mode = "NN"
-#mode = "LR"
+#mode = "NN"
+mode = "LR"
 
 np.random.seed(25)
 
@@ -30,17 +29,33 @@ x = np.delete(x, -1, axis = 1)
 
 x_train, x_test,y_train, y_test = train_test_split(x,y,test_size = 0.20)
 
+print(x_test[1])
+print(x_test[2])
+print(x_test[3])
+
+# temp = np.array([321,   99,     4,     3,     4  ,  7.325 ,  0  ])
+# newArray = np.append( x_test, [temp], axis = 0 )
+# print(newArray)
+
+
 scalerX = MinMaxScaler(feature_range=(0, 1))
 x_train = scalerX.fit_transform(x_train)
 x_test = scalerX.transform(x_test)
+# newArray = scalerX.fit_transform(newArray)
+# print(newArray[-1])
 
 if mode == "LR":
 	lr = LinearRegression()
 	lr.fit(x_train,y_train)
+
+
+
 	y_head_lr = lr.predict(x_test)
 	print("real value of y_test[1]: " + str(y_test[1]) + " -> the predict: " + str(lr.predict(x_test)[1]))
 	print("real value of y_test[2]: " + str(y_test[2]) + " -> the predict: " + str(lr.predict(x_test)[2]))
 	print("real value of y_test[4]: " + str(y_test[4]) + " -> the predict: " + str(lr.predict(x_test)[4]))
+
+	# print( "shizhan's chance : " + str(lr.predict(newArray)[-1]) )
 
 	print("r_square score: ", r2_score(y_test,y_head_lr))
 	print("mean square error: ", mean_squared_error(y_test,y_head_lr))
@@ -48,6 +63,8 @@ if mode == "LR":
 	y_head_lr_train = lr.predict(x_train)
 	print("r_square score (train dataset): ", r2_score(y_train,y_head_lr_train))
 	print("mean square error for training dataset: ", mean_squared_error(y_train,y_head_lr_train))
+
+	# print("Your chance is : " + str(lr.predict(newArray)[-1]))
 
 if mode == "NN":
 	model = models.Sequential()
