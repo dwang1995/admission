@@ -1,0 +1,6 @@
+
+ToDo
+1. Make prediction funciton
+2. Make front end 
+3. Make graphs.
+4. 

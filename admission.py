@@ -16,8 +16,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 
-mode = "NN"
-#mode = "LR"
+#mode = "NN"
+mode = "LR"
 
 np.random.seed(25)
 
@@ -31,7 +31,9 @@ x = np.delete(x, -1, axis = 1)
 x_train, x_test,y_train, y_test = train_test_split(x,y,test_size = 0.20)
 
 scalerX = MinMaxScaler(feature_range=(0, 1))
+print(x_train[1])
 x_train = scalerX.fit_transform(x_train)
+print(x_train[1])
 x_test = scalerX.transform(x_test)
 
 if mode == "LR":
