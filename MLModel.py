@@ -17,23 +17,17 @@ def getAdmissionProbability(gre_score, tofel_score, university_rating, sop, lor,
 
 	x_train, x_test,y_train, y_test = train_test_split(x,y,test_size = 0.20)
 
-	temp = np.array([gre_score,tofel_score,university_rating,sop,lor,college_gpa,research])
-	x_test = np.append( x_test, [temp], axis = 0 )
-
-	temp = np.array([gre_score,   tofel_score,     university_rating,     sop,     lor  ,  college_gpa ,  research  ])
-	newArray = np.append( x_test, [temp], axis = 0 )
-
 	scalerX = MinMaxScaler(feature_range=(0, 1))
 	x_train = scalerX.fit_transform(x_train)
 	x_test = scalerX.transform(x_test)
-	newArray = scalerX.fit_transform(newArray)
 
 	lr = LinearRegression()
 	lr.fit(x_train,y_train)
 
-	y_head_lr = lr.predict(x_test)
-
-	return lr.predict(newArray)[-1] 
+	x_input = np.array([[gre_score, tofel_score, university_rating, sop, lor, college_gpa, research]])
+	x_input = scalerX.transform(x_input)
+	
+	return lr.predict(x_input)[-1]
 
 print( getAdmissionProbability(337, 118, 4, 4.5, 4.5, 9.65, 1) )
 print( getAdmissionProbability(329, 100, 4, 4, 4, 9, 0) )
