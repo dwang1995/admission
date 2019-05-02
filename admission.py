@@ -70,7 +70,7 @@ if mode == "LR":
 
 if mode == "NN":
 	model = models.Sequential()
-	keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10)
+	keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10) #weight random noramal to init meaight mean = 0.0
 	# kernel_initializer='random_uniform', random_state = 20,
 	model.add(layers.Dense(8, activation = "relu", input_shape=(len(x_train[0]), )))
 	model.add(layers.Dense(5, activation = "relu"))
