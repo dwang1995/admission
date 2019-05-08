@@ -50,6 +50,10 @@ def calculatePercentage():
 
 
 
+
+
+
+
 def getAdmissionProbability(gre_score, tofel_score, university_rating, sop, lor, college_gpa, research):
     np.random.seed(25)
 

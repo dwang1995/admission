@@ -14,6 +14,9 @@ import keras
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 #mode = "NN"
 mode = "LR"
@@ -46,40 +49,103 @@ x_test = scalerX.transform(x_test)
 # newArray = scalerX.fit_transform(newArray)
 # print(newArray[-1])
 
-if mode == "LR":
-	lr = LinearRegression()
-	lr.fit(x_train,y_train)
+
+def main():
+    if mode == "LR":
+        lr = LinearRegression()
+        lr.fit(x_train,y_train)
 
 
 
-	y_head_lr = lr.predict(x_test)
-	print("real value of y_test[1]: " + str(y_test[1]) + " -> the predict: " + str(lr.predict(x_test)[1]))
-	print("real value of y_test[2]: " + str(y_test[2]) + " -> the predict: " + str(lr.predict(x_test)[2]))
-	print("real value of y_test[4]: " + str(y_test[4]) + " -> the predict: " + str(lr.predict(x_test)[4]))
+        y_head_lr = lr.predict(x_test)
+        print("real value of y_test[1]: " + str(y_test[1]) + " -> the predict: " + str(lr.predict(x_test)[1]))
+        print("real value of y_test[2]: " + str(y_test[2]) + " -> the predict: " + str(lr.predict(x_test)[2]))
+        print("real value of y_test[4]: " + str(y_test[4]) + " -> the predict: " + str(lr.predict(x_test)[4]))
 
-	# print( "shizhan's chance : " + str(lr.predict(newArray)[-1]) )
+        # print( "shizhan's chance : " + str(lr.predict(newArray)[-1]) )
 
-	print("r_square score: ", r2_score(y_test,y_head_lr))
-	print("mean square error: ", mean_squared_error(y_test,y_head_lr))
+        print("r_square score: ", r2_score(y_test,y_head_lr))
+        print("mean square error: ", mean_squared_error(y_test,y_head_lr))
 
-	y_head_lr_train = lr.predict(x_train)
-	print("r_square score (train dataset): ", r2_score(y_train,y_head_lr_train))
-	print("mean square error for training dataset: ", mean_squared_error(y_train,y_head_lr_train))
+        y_head_lr_train = lr.predict(x_train)
+        print("r_square score (train dataset): ", r2_score(y_train,y_head_lr_train))
+        print("mean square error for training dataset: ", mean_squared_error(y_train,y_head_lr_train))
 
-	# print("Your chance is : " + str(lr.predict(newArray)[-1]))
+        # print("Your chance is : " + str(lr.predict(newArray)[-1]))
 
-if mode == "NN":
-	model = models.Sequential()
-	keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10) #weight random noramal to init meaight mean = 0.0
-	# kernel_initializer='random_uniform', random_state = 20,
-	model.add(layers.Dense(8, activation = "relu", input_shape=(len(x_train[0]), )))
-	model.add(layers.Dense(5, activation = "relu"))
-	model.add(layers.Dense(1, activation = "sigmoid"))
-	model.summary()
+    if mode == "NN":
+        model = models.Sequential()
+        keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10) #weight random noramal to init meaight mean = 0.0
+        # kernel_initializer='random_uniform', random_state = 20,
+        model.add(layers.Dense(8, activation = "relu", input_shape=(len(x_train[0]), )))
+        model.add(layers.Dense(5, activation = "relu"))
+        model.add(layers.Dense(1, activation = "sigmoid"))
+        model.summary()
 
-	model.compile(optimizer = "adam", loss = "mean_squared_error")
-	results = model.fit(x_train, y_train, epochs= 50, batch_size = 5)#, validation_data = (x_test, y_test))
-	y_pred = model.predict(x_test)
-	r2 = r2_score(y_test, y_pred, multioutput='uniform_average') 
-	print("r squared:", r2)
-	print("mean_squared_error: ", mean_squared_error(y_test, y_pred))
+        model.compile(optimizer = "adam", loss = "mean_squared_error")
+        results = model.fit(x_train, y_train, epochs= 50, batch_size = 5)#, validation_data = (x_test, y_test))
+        y_pred = model.predict(x_test)
+        r2 = r2_score(y_test, y_pred, multioutput='uniform_average')
+        print("r squared:", r2)
+        print("mean_squared_error: ", mean_squared_error(y_test, y_pred))
+
+
+def trainModel():
+    # NN
+    model = models.Sequential()
+    keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10)  # weight random noramal to init meaight mean = 0.0
+    # kernel_initializer='random_uniform', random_state = 20,
+    model.add(layers.Dense(8, activation="relu", input_shape=(len(x_train[0]),)))
+    model.add(layers.Dense(5, activation="relu"))
+    model.add(layers.Dense(1, activation="sigmoid"))
+    # model.summary()
+
+    model.compile(optimizer="adam", loss="mean_squared_error")
+    results = model.fit(x_train, y_train, epochs=50, batch_size=5)  # , validation_data = (x_test, y_test))
+    y_pred = model.predict(x_test)
+    r2 = r2_score(y_test, y_pred, multioutput='uniform_average')
+    print("========NN=============")
+    print("r squared:", r2)
+    print("mean_squared_error: ", mean_squared_error(y_test, y_pred))
+
+    #linear regression
+
+    lr = LinearRegression()
+    lr.fit(x_train, y_train)
+
+    y_head_lr = lr.predict(x_test)
+
+
+    print("========Linear Regression=============")
+    print("r_square score: ", r2_score(y_test, y_head_lr))
+    print("mean square error: ", mean_squared_error(y_test, y_head_lr))
+
+
+    #decision tree
+    dt = DecisionTreeRegressor(random_state=42)
+    dt.fit(x_train, y_train)
+    dtResult = dt.predict(x_test)
+    print("========Decision Tree=============")
+    print("r squared:", r2_score(y_test,dtResult))
+    print("mean_squared_error: ", mean_squared_error(y_test, dtResult))
+
+
+
+    #random forrest
+    rf = RandomForestRegressor(n_estimators=100, random_state=42)
+    rf.fit(x_train, y_train)
+
+
+    rfResult = rf.predict(x_test)
+    print("========Random Forrest=============")
+    print("r_square score ", r2_score(y_test, rfResult))
+    print("mean square error: ", mean_squared_error(y_test, rfResult))
+
+
+
+
+
+
+trainModel()
+
+
