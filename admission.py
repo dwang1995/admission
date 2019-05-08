@@ -35,7 +35,7 @@ x = np.delete(x, -1, axis = 1)
 kf = KFold(n_splits=4)
 
 for train_index, test_index in kf.split(x):
-    
+
     x_train, x_test = x[train_index], x[test_index]
     y_train, y_test = y[train_index], y[test_index]
 
@@ -49,9 +49,9 @@ for train_index, test_index in kf.split(x):
 
 
 scalerX = MinMaxScaler(feature_range=(0, 1))
-print(x_train[1])
+#print(x_train[1])
 x_train = scalerX.fit_transform(x_train)
-print(x_train[1])
+#print(x_train[1])
 x_test = scalerX.transform(x_test)
 # newArray = scalerX.fit_transform(newArray)
 # print(newArray[-1])
@@ -61,6 +61,7 @@ x_test = scalerX.transform(x_test)
 
 def trainModel():
     dictionary = {}
+
     # NN
     nn = models.Sequential()
     keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10)  # weight random noramal to init meaight mean = 0.0
@@ -85,12 +86,12 @@ def trainModel():
     lr = LinearRegression()
     lr.fit(x_train, y_train)
 
-    y_head_lr = lr.predict(x_test)
+    y_lr = lr.predict(x_test)
 
 
     print("========Linear Regression=============")
-    r2_lr = r2_score(y_test, y_head_lr)
-    mean_squared_error_lr = mean_squared_error(y_test, y_head_lr)
+    r2_lr = r2_score(y_test, y_lr)
+    mean_squared_error_lr = mean_squared_error(y_test, y_lr)
     print("r_square score: ", r2_lr)
     print("mean square error: ", mean_squared_error_lr)
     dictionary["LR"] = mean_squared_error_lr
@@ -119,10 +120,15 @@ def trainModel():
     dictionary["RF"] = mean_squared_error(y_test, rfResult)
 
 
-    print(dictionary)
 
-    sorted_d = sorted(dictionary.items(), key=operator.itemgetter(1))
-    print(sorted_d)
+    print(dictionary)
+    print("weights: ",calculateWeight(dictionary))
+
+
+
+
+    # sorted_d = sorted(dictionary.items(), key=operator.itemgetter(1))
+    # print(sorted_d)
     return nn,lr,dt,rf
 
 
@@ -137,9 +143,36 @@ def getAdmissionProbability(gre_score, toefl_score, university_rating, sop, lor,
     lr_pred = lr.predict(input)[-1]
     nn_pred = nn.predict(input)[-1]
 
-    finalResult = 0.5*rf_pred + 0.3*dt_pred + 0.15*lr_pred + 0.05* nn_pred
+    finalResult = 0.3456*rf_pred + 0.3274*dt_pred + 0.1657*lr_pred + 0.1612* nn_pred
     print("finalResult: ",finalResult)
     return(finalResult[0])
 
+def calculateWeight(dict):
+    mse_List = []
+    sorted_d = sorted(dict.items(), key=operator.itemgetter(1))
+    for method,mse in sorted_d:
+        mse_List.append(mse)
+
+    normalized = normalize(mse_List)
+    normalized_fixed = []
+
+    for i in normalized:
+        value = 1 - i
+        normalized_fixed.append(value)
+
+    sum = 0
+    for i in normalized_fixed:
+        sum += i
+    #print("sum: ",sum)
+    weights = []
+    for i in normalized_fixed:
+        weights.append(i/sum)
+    return(weights)
+
+def normalize(v):
+    norm = np.linalg.norm(v)
+    if norm == 0:
+       return v
+    return v / norm
 #getAdmissionProbability(337, 118, 4, 4.5, 4.5, 5, 1)
-trainModel()
+#trainModel()
