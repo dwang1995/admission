@@ -18,6 +18,7 @@ import statsmodels.api as sm
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.tree import DecisionTreeRegressor
 import operator
+from sklearn.model_selection import KFold
 
 #mode = "NN"
 mode = "LR"
@@ -31,7 +32,14 @@ y = x[:, -1]
 x = np.delete(x, 0, axis = 1)
 x = np.delete(x, -1, axis = 1)
 
-x_train, x_test,y_train, y_test = train_test_split(x,y,test_size = 0.20)
+kf = KFold(n_splits=4)
+
+for train_index, test_index in kf.split(x):
+    
+    x_train, x_test = x[train_index], x[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+
+#x_train, x_test,y_train, y_test = train_test_split(x,y,test_size = 0.20)
 
 
 
@@ -47,6 +55,7 @@ print(x_train[1])
 x_test = scalerX.transform(x_test)
 # newArray = scalerX.fit_transform(newArray)
 # print(newArray[-1])
+
 
 
 
@@ -133,4 +142,4 @@ def getAdmissionProbability(gre_score, toefl_score, university_rating, sop, lor,
     return(finalResult[0])
 
 #getAdmissionProbability(337, 118, 4, 4.5, 4.5, 5, 1)
-
+trainModel()
