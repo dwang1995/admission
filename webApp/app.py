@@ -3,15 +3,9 @@ from flask import Flask, Response, request, render_template, redirect, url_for,s
 #import flask.ext.login as flask_login
 import os, base64
 from decimal import Decimal
+from admission import getAdmissionProbability
 
 
-import numpy as np
-from numpy import genfromtxt
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.linear_model import LinearRegression
-from sklearn import linear_model
-import statsmodels.api as sm
 
 app = Flask(__name__)
 
@@ -54,36 +48,36 @@ def calculatePercentage():
 
 
 
-def getAdmissionProbability(gre_score, tofel_score, university_rating, sop, lor, college_gpa, research):
-    np.random.seed(25)
-
-    my_data = genfromtxt('Admission_Predict.csv', delimiter=',')
-
-    x = np.delete(my_data, 0, 0)
-    y = x[:, -1]
-    x = np.delete(x, 0, axis=1)
-    x = np.delete(x, -1, axis=1)
-
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20)
-
-    scalerX = MinMaxScaler(feature_range=(0, 1))
-    x_train = scalerX.fit_transform(x_train)
-    x_test = scalerX.transform(x_test)
-
-    lr = LinearRegression()
-    lr.fit(x_train, y_train)
-
-    model = sm.OLS(y_train,x_train)
-    result = model.fit()
-    print(result.summary())
-
-
-
-    x_input = np.array([[gre_score, tofel_score, university_rating, sop, lor, college_gpa, research]])
-    x_input = scalerX.transform(x_input)
-    #print("coef ",lr.coef_)
-
-    return lr.predict(x_input)[-1]
+# def getAdmissionProbability(gre_score, tofel_score, university_rating, sop, lor, college_gpa, research):
+#     np.random.seed(25)
+#
+#     my_data = genfromtxt('Admission_Predict.csv', delimiter=',')
+#
+#     x = np.delete(my_data, 0, 0)
+#     y = x[:, -1]
+#     x = np.delete(x, 0, axis=1)
+#     x = np.delete(x, -1, axis=1)
+#
+#     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20)
+#
+#     scalerX = MinMaxScaler(feature_range=(0, 1))
+#     x_train = scalerX.fit_transform(x_train)
+#     x_test = scalerX.transform(x_test)
+#
+#     lr = LinearRegression()
+#     lr.fit(x_train, y_train)
+#
+#     model = sm.OLS(y_train,x_train)
+#     result = model.fit()
+#     print(result.summary())
+#
+#
+#
+#     x_input = np.array([[gre_score, tofel_score, university_rating, sop, lor, college_gpa, research]])
+#     x_input = scalerX.transform(x_input)
+#     #print("coef ",lr.coef_)
+#
+#     return lr.predict(x_input)[-1]
 
 if __name__ == "__main__":
     #this is invoked when in the shell  you run
