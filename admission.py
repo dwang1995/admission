@@ -91,6 +91,7 @@ def main():
 
 
 def trainModel():
+    dictionary = {}
     # NN
     model = models.Sequential()
     keras.initializers.RandomNormal(mean=0.0, stddev=0.05, seed=10)  # weight random noramal to init meaight mean = 0.0
@@ -104,9 +105,11 @@ def trainModel():
     results = model.fit(x_train, y_train, epochs=50, batch_size=5)  # , validation_data = (x_test, y_test))
     y_pred = model.predict(x_test)
     r2 = r2_score(y_test, y_pred, multioutput='uniform_average')
+    mean_squared_error_nn = mean_squared_error(y_test, y_pred)
     print("========NN=============")
     print("r squared:", r2)
-    print("mean_squared_error: ", mean_squared_error(y_test, y_pred))
+    print("mean_squared_error: ", mean_squared_error_nn)
+    dictionary["NN"] = [r2,mean_squared_error_nn]
 
     #linear regression
 
@@ -117,9 +120,11 @@ def trainModel():
 
 
     print("========Linear Regression=============")
-    print("r_square score: ", r2_score(y_test, y_head_lr))
-    print("mean square error: ", mean_squared_error(y_test, y_head_lr))
-
+    r2_lr = r2_score(y_test, y_head_lr)
+    mean_squared_error_lr = mean_squared_error(y_test, y_head_lr)
+    print("r_square score: ", r2_lr)
+    print("mean square error: ", mean_squared_error_lr)
+    dictionary["LR"] = [r2_lr,mean_squared_error_lr]
 
     #decision tree
     dt = DecisionTreeRegressor(random_state=42)
@@ -128,7 +133,7 @@ def trainModel():
     print("========Decision Tree=============")
     print("r squared:", r2_score(y_test,dtResult))
     print("mean_squared_error: ", mean_squared_error(y_test, dtResult))
-
+    dictionary["DT"] = [r2_score(y_test,dtResult),mean_squared_error(y_test, dtResult)]
 
 
     #random forrest
@@ -140,8 +145,10 @@ def trainModel():
     print("========Random Forrest=============")
     print("r_square score ", r2_score(y_test, rfResult))
     print("mean square error: ", mean_squared_error(y_test, rfResult))
+    dictionary["RF"] = [r2_score(y_test, rfResult),mean_squared_error(y_test, rfResult)]
 
 
+    print(dictionary)
 
 
 
