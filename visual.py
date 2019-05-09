@@ -9,17 +9,18 @@ import os
 
 # read data
 df = pd.read_csv("Admission_Predict.csv",sep = ",")
-# get basic infor
+# get basic information
 df.info()
 print("There are",len(df.columns),"columns, and", len(df),"cases in the dataset. The variables include:")
 for x in df.columns:
-    sys.stdout.write(str(x)+", ")
+    if x != "Serial No.":
+        sys.stdout.write(str(x)+", ")
 
 df.hist(bins=50, figsize=(20,15))
 plt.show()
 
 corr_matrix=df.corr()
-corr_matrix
+#corr_matrix
 
 mask = np.zeros_like(corr_matrix, dtype=np.bool)
 mask[np.triu_indices_from(mask)] = True
