@@ -1,6 +1,5 @@
 
 import numpy as np
-
 from numpy import genfromtxt
 from keras import models
 from keras import layers
