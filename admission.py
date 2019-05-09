@@ -1,17 +1,11 @@
-import pandas as pd
-import matplotlib.pyplot as plt
+
 import numpy as np
-import seaborn as sns
-import sys
-import os
+
 from numpy import genfromtxt
-from keras.utils import to_categorical
 from keras import models
 from keras import layers
-from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error
 import keras
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LinearRegression
 import statsmodels.api as sm
@@ -20,8 +14,7 @@ from sklearn.tree import DecisionTreeRegressor
 import operator
 from sklearn.model_selection import KFold
 
-#mode = "NN"
-mode = "LR"
+
 
 np.random.seed(25)
 
@@ -74,10 +67,8 @@ def trainModel():
     nn.compile(optimizer="adam", loss="mean_squared_error")
     nn.fit(x_train, y_train, epochs=50, batch_size=5)  # , validation_data = (x_test, y_test))
     y_pred = nn.predict(x_test)
-    r2 = r2_score(y_test, y_pred, multioutput='uniform_average')
     mean_squared_error_nn = mean_squared_error(y_test, y_pred)
     print("========NN=============")
-    print("r squared:", r2)
     print("mean_squared_error: ", mean_squared_error_nn)
     dictionary["NN"] = mean_squared_error_nn
 
@@ -86,13 +77,11 @@ def trainModel():
     lr = LinearRegression()
     lr.fit(x_train, y_train)
 
-    pred_lr = lr.predict(x_test)
+    lrResult = lr.predict(x_test)
 
 
     print("========Linear Regression=============")
-    r2_lr = r2_score(y_test, pred_lr)
-    mean_squared_error_lr = mean_squared_error(y_test, pred_lr)
-    print("r_square score: ", r2_lr)
+    mean_squared_error_lr = mean_squared_error(y_test, lrResult)
     print("mean square error: ", mean_squared_error_lr)
     dictionary["LR"] = mean_squared_error_lr
 
@@ -102,7 +91,6 @@ def trainModel():
     dtResult = dt.predict(x_test)
 
     print("========Decision Tree=============")
-    print("r squared:", r2_score(y_test,dtResult))
     print("mean_squared_error: ", mean_squared_error(y_test, dtResult))
     #dictionary["DT"] = [r2_score(y_test,dtResult),mean_squared_error(y_test, dtResult)]
     dictionary["DT"] = mean_squared_error(y_test, dtResult)
@@ -115,7 +103,6 @@ def trainModel():
 
     rfResult = rf.predict(x_test)
     print("========Random Forrest=============")
-    print("r_square score ", r2_score(y_test, rfResult))
     print("mean square error: ", mean_squared_error(y_test, rfResult))
     #dictionary["RF"] = [r2_score(y_test, rfResult),mean_squared_error(y_test, rfResult)]
     dictionary["RF"] = mean_squared_error(y_test, rfResult)
@@ -179,4 +166,4 @@ def normalize(v):
        return v
     return v / norm
 #getAdmissionProbability(337, 118, 4, 4.5, 4.5, 5, 1)
-#trainModel()
+trainModel()
