@@ -86,12 +86,12 @@ def trainModel():
     lr = LinearRegression()
     lr.fit(x_train, y_train)
 
-    y_lr = lr.predict(x_test)
+    pred_lr = lr.predict(x_test)
 
 
     print("========Linear Regression=============")
-    r2_lr = r2_score(y_test, y_lr)
-    mean_squared_error_lr = mean_squared_error(y_test, y_lr)
+    r2_lr = r2_score(y_test, pred_lr)
+    mean_squared_error_lr = mean_squared_error(y_test, pred_lr)
     print("r_square score: ", r2_lr)
     print("mean square error: ", mean_squared_error_lr)
     dictionary["LR"] = mean_squared_error_lr
@@ -100,6 +100,7 @@ def trainModel():
     dt = DecisionTreeRegressor(random_state=42)
     dt.fit(x_train, y_train)
     dtResult = dt.predict(x_test)
+
     print("========Decision Tree=============")
     print("r squared:", r2_score(y_test,dtResult))
     print("mean_squared_error: ", mean_squared_error(y_test, dtResult))
@@ -144,12 +145,15 @@ def getAdmissionProbability(gre_score, toefl_score, university_rating, sop, lor,
     nn_pred = nn.predict(input)[-1]
 
     finalResult = 0.3456*rf_pred + 0.3274*dt_pred + 0.1657*lr_pred + 0.1612* nn_pred
-    print("finalResult: ",finalResult)
+
+    #print("finalResult: ",finalResult)
+
     return(finalResult[0])
 
 def calculateWeight(dict):
     mse_List = []
     sorted_d = sorted(dict.items(), key=operator.itemgetter(1))
+
     for method,mse in sorted_d:
         mse_List.append(mse)
 
