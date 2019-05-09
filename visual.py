@@ -9,7 +9,7 @@ import os
 
 # read data
 df = pd.read_csv("Admission_Predict.csv",sep = ",")
-# get basic infor
+# get basic information
 df.info()
 print("There are",len(df.columns),"columns, and", len(df),"cases in the dataset. The variables include:")
 for x in df.columns:
